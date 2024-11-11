@@ -64,4 +64,25 @@ class fs_cache{
         std::string NEG_str = std::to_string(NEG_FS);
         return NEG_str;
     }
+
+    std::string put_fs(std::string fs_key) {
+        if(cache.find(fs_key) != cache.end()){
+            fs_nodes* node = cache[fs_key];
+            cache[fs_key] = node;
+            move_fs(node);
+            return fs_key;
+        } else {
+            if(cache.size() == fs_capacity) {
+                fs_nodes* least_accessed = fs_bottom->prevfile;
+                remove_fs(least_accessed);
+                cache.erase(least_accessed->key);
+                delete(least_accessed);
+            }
+
+            fs_nodes* file_node = new fs_nodes(fs_key);
+            cache[fs_key] = file_node;
+            add_fs(file_node);
+            return file_node->key;
+        }
+    }
 };
