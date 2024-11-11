@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #define NEG_FS -1
+#define SM_CONTENT "BASE_FILE"
 
 class fs_nodes {
     public:
@@ -62,7 +63,12 @@ class fs_cache{
             return node->key;
         } 
         std::string NEG_str = std::to_string(NEG_FS);
-        return NEG_str;
+        std::ifstream sample_file(fs_key);
+        if(!sample_file.is_open())perror("error");
+        std::string contents((std::istreambuf_iterator<char>(sample_file)), 
+        std::istreambuf_iterator<char>());
+        sample_file.close();
+        return contents;
     }
 
     std::string put_fs(std::string fs_key) {
@@ -82,6 +88,10 @@ class fs_cache{
             fs_nodes* file_node = new fs_nodes(fs_key);
             cache[fs_key] = file_node;
             add_fs(file_node);
+            std::ofstream new_sample(fs_key);
+            if(!new_sample.is_open())perror("error");
+            new_sample << SM_CONTENT;
+            new_sample.close();
             return file_node->key;
         }
     }
