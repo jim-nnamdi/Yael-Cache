@@ -13,6 +13,10 @@ using namespace std;
 class Node
 {
 public:
+    Node();
+    Node(const Node& node);
+    friend std::ostream operator<<(const std::ostream& os, Node& node);
+    friend std::istream operator>>(const std::istream& is, Node& node);
     int K, V;
     Node *N;
     Node *P;
@@ -22,35 +26,11 @@ public:
 
 class LRUCache
 {
-private:
-    unordered_map<int, Node *> cache;
-    int capacity;
-    Node *head;
-    Node *tail;
-
-    void remove_node(Node* node)
-    {
-        Node* PNode = node->P;
-        Node* NNode = node->N;
-        PNode->N = NNode;
-        NNode->P = PNode;
-    }
-
-    void insert_front(Node* node) 
-    {
-        node->N = head->N;
-        node->P = head;
-        head->N->P = node;
-        head->N = node;
-    }
-
-    void move_front(Node* node)
-    {
-        remove_node(node);
-        insert_front(node);
-    }
-
 public:
+    LRUCache();
+    LRUCache(const LRUCache& cache);
+    LRUCache(const LRUCache&& cache);
+    friend std::ostream operator<<(const std::ostream&, LRUCache& cache);
     LRUCache(int capacity)
     {
         head = new Node(0, 0);
@@ -90,6 +70,34 @@ public:
             insert_front(most_active);
         }
     }
+private:
+    unordered_map<int, Node *> cache;
+    int capacity;
+    Node *head;
+    Node *tail;
+
+    void remove_node(Node* node)
+    {
+        Node* PNode = node->P;
+        Node* NNode = node->N;
+        PNode->N = NNode;
+        NNode->P = PNode;
+    }
+
+    void insert_front(Node* node) 
+    {
+        node->N = head->N;
+        node->P = head;
+        head->N->P = node;
+        head->N = node;
+    }
+
+    void move_front(Node* node)
+    {
+        remove_node(node);
+        insert_front(node);
+    }
+
 };
 
 /**
