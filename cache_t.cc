@@ -38,6 +38,10 @@ class LRUcache {
     }
 
     public:
+    LRUCache();
+    LRUCache(const LRUCache& cache);
+    LRUCache(const LRUCache&& cache);
+    friend std::ostream operator<<(const std::ostream&, LRUCache& cache);
     LRUcache(size_t cap): capacity(cap) {
         head = new Node(0, 0);
         tail = new Node(0, 0);
